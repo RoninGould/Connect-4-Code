@@ -1,0 +1,296 @@
+// Ronin Gould
+//  Design Project 3.cpp
+// CPET 121
+//  Created by Ronin Gould on 10/29/22.
+// This program is connect 4 which plays by turn and tallies the wins of each player until they end the game
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+
+#define Height 6
+#define Width 7
+
+
+using namespace std;
+
+// function definitions
+
+bool horizontalCheck(char board[Height][Width], char Turn);
+
+bool verticalCheck(char board[Height][Width], char Turn);
+
+bool diagonalCheck(char board[Height][Width], char Turn);
+
+
+
+void boardDisplay(char board[Height][Width], int player, int play) {
+
+
+
+    cout << '\n' << "  1   2   3   4   5   6   7 " << endl;
+
+    for (int y = 0; y < Height; y++) {
+
+        for (int x = 0; x < Width + 1; x++)
+        {
+
+            cout << "|  " << board[y][x];
+        }
+        cout << '\n' << "+---+---+---+---+---+---+---+" << endl;
+    }
+
+}
+
+void playerMove(char board[Height][Width], int player, char play) {
+
+    char Turn = ' ';
+    int Move;
+    int plays = 0;
+
+    while (play == 'Y') {
+
+        if (player == 1) {
+            Turn = 'O';
+        }
+        if (player == 2) {
+            Turn = 'X';
+        }
+
+        cout << "Player #" << player << "'s Turn(" << Turn << ")  :  Enter your move  :" << endl;
+
+        cin >> Move;
+
+        Move = Move - 1;
+
+        if ((Move >= 0) && (Move <= Width - 1)) { // spilit horizontal and vertical if statments
+
+            for (int y = Height - 1; y >= 0; y--) {
+                if (board[y][Move] == ' ') {
+                    board[y][Move] = Turn;
+                   
+                    if (player == 1) {
+                        player = 2;
+                        break;
+                    }
+                    else if (player == 2) {
+                        player = 1;
+                    }
+                    
+                    
+                    break;
+                }
+                if  ((y == 0) && (board[y][Move] != ' ')){
+                    cout << "Move not available, turn lost" << endl;
+                    
+                    if (player == 1) {
+                        player = 2;
+                        break;
+                    }
+                    else if (player == 2) {
+                        player = 1;
+                    }
+                    
+                    break;
+                }
+
+            }
+            boardDisplay(board, player, play);
+            horizontalCheck(board, Turn);
+            verticalCheck(board, Turn);
+            diagonalCheck(board, Turn);
+            
+           
+        }
+        else {
+            cout << "Illegal move please Reenter";
+
+            cin >> Move;
+        }
+
+        plays++;
+    }
+}
+
+
+
+bool horizontalCheck(char board[Height][Width], char Turn) {
+
+    int horizontal = 0;
+    int x;
+    int y;
+    char TNF = 'F';
+
+    
+    //for ((x = Width + 1; board[y][x] == Turn;) && (x <= 6; x++, horizontal++)); // split for and if statments
+    //for ((x = Width - 1; board[y][x] == Turn;) && (x >= 0; x--, horizontal++));
+    for (y=0; y<=5; y++){ // Horizontal check that checks the whole board
+        for (x=0; x<=6; x++) {
+            if(board[y][x] == Turn)
+                horizontal++;
+        }
+        if (horizontal >= 4)
+            TNF = 'T';
+        else
+            TNF = 'F';
+        
+}
+        
+if (TNF == 'T')
+    return true;
+else
+    return false;
+}
+
+bool verticalCheck(char board[Height][Width], char Turn) {
+    int vertical = 0;
+    int y;
+    int x;
+    char TNF = 'F';
+    
+    
+    //for ((y = Height + 1; board[y][x] == Turn;) && (y <= 5; y++, vertical++)); // split for and if statments
+    //for ((y = Height - 1; board[y][x] == Turn;) && (y >= 0; y--, vertical++));
+    
+    for(x=0; x<=6; x++){
+        for(y=0; y<=5; y++){
+            if (board[y][x] == Turn)
+                vertical++;
+            cout << vertical;
+        }
+            if (vertical >= 4)
+                TNF = 'T';
+            else
+                TNF = 'F';
+            
+    }
+            
+    if (TNF == 'T')
+        return true;
+    else
+        return false;
+}
+
+bool diagonalCheck(char board[Height][Width], char Turn) {
+    int diagonal1 = 0;
+    int diagonal2 = 0;
+    int x;
+    int y;
+    char TNF = 'F';
+
+    
+    //for ((y = Height + 1, x = Width + 1; board[y][x] == Turn;) && (y <= 5 && x <= 6; y++, x++ diagonal1++));//down and right
+    //for ((y = Height - 1, x = Width - 1; board[y][x] == Turn;) && (y >= 0 && x >= 0; y--, x-- diagonal1++));//up and left
+    
+    for (y = 0; y<= 5; y++){
+        for (x =y ; x < y +1; x++) {
+            if (board[y][x] == Turn)
+                diagonal1 ++;
+        }
+        if (diagonal1 >= 4)
+            TNF = 'T';
+        else
+            TNF = 'F';
+    }
+    
+    
+    
+   
+   // for ((y = Height + 1, x = Width - 1; board[y][x] == Turn;) && (y <= 5 && x <= 6; y--, x++ diagonal2++));//up and left
+   // for ((y = Height - 1, x = Width + 1; board[y][x] == Turn;) && (y >= 0 && x >= 0; y++, x-- diagonal2++));//up and right
+    
+    for (y = 5; y>= 0; y--){
+        for (x = y ; x < y + 1; x++) {
+            if (board[y][x] == Turn)
+                diagonal1 ++;
+        }
+        if (diagonal2 >= 4)
+            TNF = 'T';
+        else
+            TNF = 'F';
+    }
+    
+    
+    if (TNF == 'T')
+        return true;
+    else
+        return false;
+    
+ 
+}
+void winnerPrompt(char board[Height][Width], int plays, int player, char Turn, char play) {
+
+    int draws = 0;
+    
+    
+    
+    if (plays == 42) {
+        draws++;
+        cout << "There were : " << draws << " draw(s)" << endl;
+        cout << "Would you like to play again? Y/N" << endl;
+        cin >> play;
+        if (play == 'N')
+        system("CLC");
+    }
+
+    if (horizontalCheck(board, Turn) == true) {
+        cout << "Player: " << player << " won!" << endl;
+        cout << "Would you like to play again? Y/N" << endl;
+        cin >> play;
+        if (play == 'N')
+            system("CLC");
+    }
+    if (verticalCheck(board, Turn) == true) {
+        cout << "Player: " << player << " won!" << endl;
+        cout << "Would you like to play again? Y/N" << endl;
+        cin >> play;
+        if (play == 'N')
+            system("CLC");
+    }
+    if (diagonalCheck(board, Turn) == true) {
+        cout << "Player: " << player << " won!" << endl;
+        cout << "Would you like to play again? Y/N" << endl;
+        cin >> play;
+        if (play == 'N')
+            system("CLC");
+    }
+
+}
+
+int main() {
+
+    int player;
+    int plays = 0;
+    char Turn = '\0';
+    char play = 'Y';
+    char board[Height][Width];
+
+    srand(time(NULL));
+    player = rand() % 2 + 1;
+
+    cout << setw(8) << "Welcome to Connect 4" << '\n' << "Win the game by being the first to place" << endl;
+    cout << "four checkers in a row diagonally, horizontally, or vertically!" << endl;
+    
+    for (int y = 0; y < Height; y++) {
+
+        for (int x = 0; x < Width ; x++)
+        {
+            board[y][x] = ' ';
+        }
+    }
+
+
+    boardDisplay( board, player, play);
+    playerMove(board, player, play);
+    horizontalCheck(board, Turn);
+    verticalCheck(board, Turn);
+    diagonalCheck(board, Turn);
+    winnerPrompt(board, plays, player, Turn, play);
+
+
+
+
+    return(0);
+}
+
+
